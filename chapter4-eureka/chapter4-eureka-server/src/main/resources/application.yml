@@ -1,0 +1,22 @@
+server:
+  port: 8761
+
+spring:
+  application:
+    name: eureka-service
+
+info:
+  app:
+    name: Eureka-Server
+
+eureka:
+  instance:
+    # 唯一标记，用于区分同一服务集群的不同实例
+    instance-id: ${spring.application.name}:${vcap.application.instance_id:${spring.application.instance_id:${random.value}}}
+    hostname: localhost
+  client:
+    register-with-eureka: false   # 服务不会向server注册自己的信息
+    fetch-registry: false         # 服务不会向server获取注册信息
+    service-url:                  # 注册中心地址，用于client与server进行交换
+      # 集群部署：一个 Eureka Server 也是一个 Eureka Client，它会尝试注册自己，所以需要至少一个注册中心的 URL 来定位对等点 peer
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/    # 指向的注册中心为实例本身
