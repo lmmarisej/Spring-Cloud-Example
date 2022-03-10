@@ -1,0 +1,46 @@
+spring:
+  application:
+    # 从 http://{配置服务器URL}/{当前spring.application.name}/{当前spring.cloud.config.profile} 获取配置文件
+    name: config-client-xxx   # 也就是从 http://localhost:8888/config-client-xxx/dev1 获取配置文件
+  cloud:
+    config:
+      allowOverride: true
+      overrideNone: true
+      label: master
+      discovery:
+        enabled: true
+        service-id: config-server   # 配置服务器
+      enabled: true
+      fail-fast: true
+      profile: dev1     # 使用远程dev1配置作为spring.profiles
+      username: cxk
+      password: 123456
+    consul:
+      host: localhost
+      port: 8500
+      discovery:
+        ip-address: ${HOST_ADDRESS:localhost}
+        port: ${SERVER_PORT:${server.port}}
+        healthCheckPath: /health
+        healthCheckInterval: 15s
+        instance-id: config-client-${server.port}
+        service-name: config-client
+
+name: cxk
+
+---
+cloud:
+  version: Camden
+
+server:
+  port: 8008
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+logging:
+  level:
+    root: info

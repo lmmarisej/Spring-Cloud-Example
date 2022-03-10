@@ -1,0 +1,5 @@
+spring:
+  profiles: dev1        # 需要和当前文件的名字保持匹配
+
+cloud:
+  version: Camden SR4 xxxxxx  dev1
