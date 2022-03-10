@@ -68,7 +68,9 @@ import org.springframework.util.StringUtils;
  * @author Olga Maciaszek-Sharma
  * @author Jasbir Singh
  */
-class FeignClientsRegistrar implements ImportBeanDefinitionRegistrar, ResourceLoaderAware, EnvironmentAware {
+class FeignClientsRegistrar implements
+		ImportBeanDefinitionRegistrar,	// Spring用 ImportBeanDefinitionRegistrar来动态注册BeanDefinition。
+		ResourceLoaderAware, EnvironmentAware {
 
 	// patterned after Spring Integration IntegrationComponentScanRegistrar
 	// and RibbonClientsConfigurationRegistgrar
@@ -152,9 +154,11 @@ class FeignClientsRegistrar implements ImportBeanDefinitionRegistrar, ResourceLo
 	}
 
 	private void registerDefaultConfiguration(AnnotationMetadata metadata, BeanDefinitionRegistry registry) {
+		// 获取到 metadata 中关于 EnableFe工gnClients 的属性值键值对
 		Map<String, Object> defaultAttrs = metadata.getAnnotationAttributes(EnableFeignClients.class.getName(), true);
 
-		if (defaultAttrs != null && defaultAttrs.containsKey("defaultConfiguration")) {
+		// 如果 EnableFeignClients 配置了 defaultConfigurat工on 类，那么才进行下一步操作，如果没有，会使用默认的 FeignConfiguration
+		if (defaultAttrs != null && defaultAttrs.containsKey("defaultConfiguration")) {		// 是否设置了 defaultConfiguration属性
 			String name;
 			if (metadata.hasEnclosingClass()) {
 				name = "default." + metadata.getEnclosingClassName();
@@ -162,6 +166,7 @@ class FeignClientsRegistrar implements ImportBeanDefinitionRegistrar, ResourceLo
 			else {
 				name = "default." + metadata.getClassName();
 			}
+			// 进行BeanDefinitionRegistry的注册
 			registerClientConfiguration(registry, name, defaultAttrs.get("defaultConfiguration"));
 		}
 	}
@@ -239,7 +244,7 @@ class FeignClientsRegistrar implements ImportBeanDefinitionRegistrar, ResourceLo
 		validate(attributes);
 
 		AbstractBeanDefinition beanDefinition = definition.getBeanDefinition();
-		beanDefinition.setAttribute(FactoryBean.OBJECT_TYPE_ATTRIBUTE, className);
+		beanDefinition.setAttribute("FactoryBean.OBJECT_TYPE_ATTRIBUTE", className);
 		beanDefinition.setAttribute("feignClientsRegistrarFactoryBean", factoryBean);
 
 		// has a default, won't be null
@@ -407,6 +412,7 @@ class FeignClientsRegistrar implements ImportBeanDefinitionRegistrar, ResourceLo
 	}
 
 	private void registerClientConfiguration(BeanDefinitionRegistry registry, Object name, Object configuration) {
+		// 使用 BeanDef工n工tionBuilder来生成 BeanDefinition，并注册到 registry上
 		BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(FeignClientSpecification.class);
 		builder.addConstructorArgValue(name);
 		builder.addConstructorArgValue(configuration);

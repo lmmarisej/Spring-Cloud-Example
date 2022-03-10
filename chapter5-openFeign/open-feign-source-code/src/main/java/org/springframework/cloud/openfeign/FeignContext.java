@@ -31,6 +31,8 @@ import org.springframework.lang.Nullable;
  * @author Dave Syer
  * @author Matt King
  * @author Jasbir Singh
+ *
+ * 是配置组件的上下文环境，保存着相关组件的不同实例，这些实例由不同的 FeignConfiguration 配置类构造出来;
  */
 public class FeignContext extends NamedContextFactory<FeignClientSpecification> {
 

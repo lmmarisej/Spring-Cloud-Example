@@ -70,6 +70,10 @@ import org.springframework.util.StringUtils;
  * @author Jasbir Singh
  * @author Hyeonmin Park
  * @author Felix Dittrich
+ *
+ * 是创建 @FeignClient修饰的接口类 Bean实例的工厂类;
+ *
+ * 被@FeignClient修饰的接口类都是通过 FeignClientFactoryBean 的 getObject 方法来进行实例化的。
  */
 public class FeignClientFactoryBean
 		implements FactoryBean<Object>, InitializingBean, ApplicationContextAware, BeanFactoryAware {
@@ -79,7 +83,7 @@ public class FeignClientFactoryBean
 	 * lifecycle race condition.
 	 ***********************************/
 
-	private static Log LOG = LogFactory.getLog(FeignClientFactoryBean.class);
+	private static final Log LOG = LogFactory.getLog(FeignClientFactoryBean.class);
 
 	private Class<?> type;
 
@@ -348,7 +352,9 @@ public class FeignClientFactoryBean
 		return instance;
 	}
 
+	// getOptional方法调用了 FeignContext 的 getlnstance 方法 ，从 FeignContext 的对应 名称的子上下文中获取到 Client类型的 Bean 实例，其具体实现如下所示:
 	protected <T> T getOptional(FeignContext context, Class<T> type) {
+		// //从对应的 context 中获取 Bean 实例 ， 如果对应的子上下文没有则直接从父上下文中获取
 		return context.getInstance(contextId, type);
 	}
 
@@ -430,7 +436,9 @@ public class FeignClientFactoryBean
 			url = "http://" + url;
 		}
 		String url = this.url + cleanPath();
+		//调用 Fe工gnContext的getInstance方法获取Clie口t对象
 		Client client = getOptional(context, Client.class);
+		//因为有具体的 Url ，所以就不需要负载均衡，所以除去 LoadBalancerFeignClient 实例
 		if (client != null) {
 			if (client instanceof FeignBlockingLoadBalancerClient) {
 				// not load balancing because we have a url,

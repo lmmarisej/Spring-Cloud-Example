@@ -193,6 +193,7 @@ public class SpringMvcContract extends Contract.BaseContract implements Resource
 		return super.parseAndValidateMetadata(targetType, method);
 	}
 
+	// 处理修饰函数的注解
 	@Override
 	protected void processAnnotationOnMethod(MethodMetadata data, Annotation methodAnnotation, Method method) {
 		if (CollectionFormat.class.isInstance(methodAnnotation)) {
@@ -200,13 +201,14 @@ public class SpringMvcContract extends Contract.BaseContract implements Resource
 			data.template().collectionFormat(collectionFormat.value());
 		}
 
+		// 验 该函数是否被@RequestMapping修饰 ，如果没有就会直接返回 。
 		if (!RequestMapping.class.isInstance(methodAnnotation)
 				&& !methodAnnotation.annotationType().isAnnotationPresent(RequestMapping.class)) {
 			return;
 		}
 
 		RequestMapping methodMapping = findMergedAnnotation(method, RequestMapping.class);
-		// HTTP Method
+		// HTTP Method		//处理 HTTP Method
 		RequestMethod[] methods = methodMapping.method();
 		if (methods.length == 0) {
 			methods = new RequestMethod[] { RequestMethod.GET };
@@ -215,7 +217,7 @@ public class SpringMvcContract extends Contract.BaseContract implements Resource
 		data.template().method(Request.HttpMethod.valueOf(methods[0].name()));
 
 		// path
-		checkAtMostOne(method, methodMapping.value(), "value");
+		checkAtMostOne(method, methodMapping.value(), "value");		// 处理请求的路径
 		if (methodMapping.value().length > 0) {
 			String pathValue = emptyToNull(methodMapping.value()[0]);
 			if (pathValue != null) {
@@ -232,13 +234,13 @@ public class SpringMvcContract extends Contract.BaseContract implements Resource
 		}
 
 		// produces
-		parseProduces(data, method, methodMapping);
+		parseProduces(data, method, methodMapping);		//处理生产
 
 		// consumes
-		parseConsumes(data, method, methodMapping);
+		parseConsumes(data, method, methodMapping);		//处理消费
 
 		// headers
-		parseHeaders(data, method, methodMapping);
+		parseHeaders(data, method, methodMapping);		//处理头部
 
 		data.indexToExpander(new LinkedHashMap<>());
 	}
@@ -268,13 +270,13 @@ public class SpringMvcContract extends Contract.BaseContract implements Resource
 		AnnotatedParameterProcessor.AnnotatedParameterContext context = new SimpleAnnotatedParameterContext(data,
 				paramIndex);
 		Method method = processedMethods.get(data.configKey());
-		for (Annotation parameterAnnotation : annotations) {
+		for (Annotation parameterAnnotation : annotations) {		// 遍历所有的参数注解
 			AnnotatedParameterProcessor processor = annotatedArgumentProcessors
-					.get(parameterAnnotation.annotationType());
+					.get(parameterAnnotation.annotationType());		//不同的注解类型有不同的 Processor
 			if (processor != null) {
 				Annotation processParameterAnnotation;
 				// synthesize, handling @AliasFor, while falling back to parameter name on
-				// missing String #value():
+				// missing String #value():		//如果没有缓存的 Processor， 则生成一个
 				processParameterAnnotation = synthesizeWithMethodParameterNameAsFallbackValue(parameterAnnotation,
 						method, paramIndex);
 				isHttpAnnotation |= processor.processArgument(context, processParameterAnnotation, method);
