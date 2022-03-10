@@ -22,6 +22,8 @@
         <module>chapter4-eureka-client</module>
         <module>chapter4-eureka-client-service</module>
         <module>chapter4-eureka-server</module>
+        <module>eureka-client</module>
+        <module>eureka-core</module>
     </modules>
 
     <properties>
@@ -40,6 +42,16 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>2.6</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-configuration</groupId>
+            <artifactId>commons-configuration</artifactId>
+            <version>1.10</version>
         </dependency>
     </dependencies>
 

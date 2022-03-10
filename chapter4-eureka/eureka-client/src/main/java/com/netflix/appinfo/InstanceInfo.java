@@ -50,6 +50,8 @@ import org.slf4j.LoggerFactory;
  * </p>
  *
  * @author Karthik Ranganathan, Greg Kim
+ *
+ * Eureka Client在发起服务注册时-会将自身的服务实例元数据封装在 Instancelnfo 中，然后将Instancelnfo发送 到 Eureka Server。
  */
 @ProvidedBy(EurekaConfigBasedInstanceInfoProvider.class)
 @Serializer("com.netflix.discovery.converters.EntityBodyConverter")
