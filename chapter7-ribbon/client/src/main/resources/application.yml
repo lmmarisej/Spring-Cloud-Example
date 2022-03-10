@@ -1,0 +1,7 @@
+trade1:   # 根据RestTemplate的URL来匹配配置，使用@LoadBalanced后，自动获取listOfServers下服务实例进行负载均衡
+  eureka:
+    enabled: false
+  listOfServers: 127.0.0.1:8081,127.0.0.1:8082
+  ServerListRefreshInterval: 15000
+server:
+  port: 8080
