@@ -21,7 +21,9 @@
     <modules>
         <module>chapter5-feign-client</module>
         <module>chapter5-feign-service</module>
+<!--
         <module>open-feign-source-code</module>
+-->
     </modules>
 
     <properties>

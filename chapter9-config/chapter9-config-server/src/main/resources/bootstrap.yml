@@ -1,7 +1,7 @@
 # 服务发现和配置仓库的配置信息
 spring:
   profiles:
-    active: native
+    active: git
   application:
     name: config-server
   cloud:
@@ -44,7 +44,7 @@ spring:
 # java -jar xxx.jar --spring.profiles.active=test
 ---
 spring:
-  profiles: test
+  profiles: git
   cloud:
     config:
       server:
